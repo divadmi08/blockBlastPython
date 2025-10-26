@@ -48,12 +48,6 @@ BLOCCHI = {
     "L sx down": [[1, 1], [0, 1], [0, 1]],
 }
 
-def mostra_logo():
-    path = "./logo.txt"
-    if os.path.exists(path):
-        with open(path, "r", encoding="utf-8") as f:
-            print(f.read())
-
 def crea_griglia():
     return [[0 for _ in range(DIM_GRIGLIA)] for _ in range(DIM_GRIGLIA)]
 
@@ -176,7 +170,6 @@ def messaggio_game_over(punti):
                     pygame.quit()
                     sys.exit()
 def main():
-    mostra_logo()
     punti = 0
 
     while True:  # ciclo principale riavvio
