@@ -78,18 +78,26 @@ def disegna_blocco(shape, color):
     return surf
 
 def piazza_blocco(griglia, shape, r, c):
+    # Controllo se il blocco entra nella griglia (sia sopra/sinistra che sotto/destra)
+    if r < 0 or c < 0:
+        return False
+    if r + len(shape) > DIM_GRIGLIA or c + len(shape[0]) > DIM_GRIGLIA:
+        return False
+
+    # Controllo collisioni
     for y in range(len(shape)):
         for x in range(len(shape[0])):
-            if shape[y][x] == 1:
-                if r + y >= DIM_GRIGLIA or c + x >= DIM_GRIGLIA:
-                    return False
-                if griglia[r + y][c + x] == 1:
-                    return False
+            if shape[y][x] == 1 and griglia[r + y][c + x] == 1:
+                return False
+
+    # Piazzamento
     for y in range(len(shape)):
         for x in range(len(shape[0])):
             if shape[y][x] == 1:
                 griglia[r + y][c + x] = 1
     return True
+
+
 
 def distruggi_linee(griglia):
     punti = 0
@@ -186,7 +194,7 @@ def main():
             pygame.draw.rect(screen, GRIGIO, (0, LARGHEZZA, LARGHEZZA, AREA_BLOCCHI_ALTEZZA))
             disegna_griglia(griglia)
 
-            # Disegna blocchi centrati
+            # Disegna blocchi 
             blocchi_surfaces = [disegna_blocco(shape, col) for _, shape, col in blocchi_grafica]
             larghezze = [surf.get_width() for surf in blocchi_surfaces]
             num_blocchi = len(blocchi_surfaces)
