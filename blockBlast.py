@@ -17,7 +17,7 @@ GRIGIO_SCURO = (35, 35, 35)
 BIANCO = (235, 235, 235)
 GIALLO = (255, 255, 100)
 ROSSO = (255, 80, 80)
-GHOST = (200, 200, 200, 120)  # trasparente
+GHOST = (200, 200, 200, 120)  #trasparente
 COLORI_BLOCCHI = [
     (255, 99, 71), (255, 165, 0), (255, 215, 0),
     (0, 255, 127), (0, 191, 255), (138, 43, 226)
@@ -47,6 +47,8 @@ BLOCCHI = {
     "L dx down": [[1, 1], [1, 0], [1, 0]],
     "L sx down": [[1, 1], [0, 1], [0, 1]],
 }
+
+# === FUNZIONI === #
 
 def crea_griglia():
     return [[0 for _ in range(DIM_GRIGLIA)] for _ in range(DIM_GRIGLIA)]
@@ -78,7 +80,7 @@ def disegna_blocco(shape, color):
     return surf
 
 def piazza_blocco(griglia, shape, r, c):
-    # Controllo se il blocco entra nella griglia (sia sopra/sinistra che sotto/destra)
+    # Controllo se il blocco entra nella griglia
     if r < 0 or c < 0:
         return False
     if r + len(shape) > DIM_GRIGLIA or c + len(shape[0]) > DIM_GRIGLIA:
@@ -126,7 +128,6 @@ def posizione_mouse_su_griglia(pos):
     return None
 
 def check_game_over(griglia, blocchi_grafica):
-    # Controlla se almeno uno dei blocchi può essere piazzato
     for _, shape, _ in blocchi_grafica:
         for r in range(DIM_GRIGLIA):
             for c in range(DIM_GRIGLIA):
@@ -136,8 +137,6 @@ def check_game_over(griglia, blocchi_grafica):
 
 def messaggio_game_over(punti):
     running_msg = True
-
-    # Bottoni
     btn_larghezza, btn_altezza = 200, 60
     btn_riavvia = pygame.Rect(LARGHEZZA//2 - btn_larghezza - 20, LARGHEZZA//2 + 40, btn_larghezza, btn_altezza)
     btn_esci = pygame.Rect(LARGHEZZA//2 + 20, LARGHEZZA//2 + 40, btn_larghezza, btn_altezza)
@@ -145,15 +144,12 @@ def messaggio_game_over(punti):
     while running_msg:
         screen.fill(GRIGIO_SCURO)
 
-        # Testo principale
         text = font_big.render("HAI PERSO!", True, ROSSO)
         screen.blit(text, (LARGHEZZA//2 - text.get_width()//2, LARGHEZZA//2 - 100))
 
-        # Punteggio ottenuto
         punteggio_text = font.render(f"Punti ottenuti: {punti}", True, BIANCO)
         screen.blit(punteggio_text, (LARGHEZZA//2 - punteggio_text.get_width()//2, LARGHEZZA//2 - 40))
 
-        # Bottoni
         pygame.draw.rect(screen, GIALLO, btn_riavvia, border_radius=12)
         pygame.draw.rect(screen, ROSSO, btn_esci, border_radius=12)
 
@@ -180,7 +176,7 @@ def messaggio_game_over(punti):
 def main():
     punti = 0
 
-    while True:  # ciclo principale riavvio
+    while True:  
         griglia = crea_griglia()
         blocchi_correnti = genera_blocchi()
         blocchi_grafica = [(n, BLOCCHI[n], random.choice(COLORI_BLOCCHI)) for n in blocchi_correnti]
@@ -188,13 +184,12 @@ def main():
         drag_index = None
         drag_offset = (0, 0)
 
-        while True:  # ciclo partita
+        while True:  
             screen.fill(GRIGIO_SCURO)
             pygame.draw.rect(screen, NERO, (0, 0, LARGHEZZA, LARGHEZZA))
             pygame.draw.rect(screen, GRIGIO, (0, LARGHEZZA, LARGHEZZA, AREA_BLOCCHI_ALTEZZA))
             disegna_griglia(griglia)
-
-            # Disegna blocchi 
+ 
             blocchi_surfaces = [disegna_blocco(shape, col) for _, shape, col in blocchi_grafica]
             larghezze = [surf.get_width() for surf in blocchi_surfaces]
             num_blocchi = len(blocchi_surfaces)
@@ -260,12 +255,11 @@ def main():
                         dragging = False
                         drag_index = None
 
-            # Controllo game over
             if check_game_over(griglia, blocchi_grafica):
                 result = messaggio_game_over(punti)
                 if result == "restart":
                     punti = 0
-                    break  # esce dal ciclo partita e riavvia
+                    break 
 
             pygame.display.flip()
             clock.tick(FPS)
